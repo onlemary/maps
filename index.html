@@ -1,41 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Mapa Estático</title>
-    <style>
-        #map {
-            height: 500px;
-            width: 80%;
-            margin: 20px auto;
-            border: 2px solid #333;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Interactivo</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1 style="text-align: center;">Mapa de Ejemplo 🌍</h1>
-    <div id="map"></div>
-
-    <!-- Script de Google Maps API con tu clave -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=TU_CLAVE_API&callback=initMap" async defer></script>
-
-    <script>
-        function initMap() {
-            // Coordenadas fijas (Ej: Zócalo de la CDMX)
-            const ubicacion = { lat: 19.432601, lng: -99.133204 };
+    <div class="container">
+        <div id="map"></div>
+        <div class="sidebar">
+            <h2 class="sidebar-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                Puntos de Interés
+            </h2>
             
-            // Crear mapa centrado en las coordenadas
-            const map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 15,
-                center: ubicacion
-            });
+            <div id="selected-point">
+                <p class="empty-state">Selecciona un punto en el mapa para ver más detalles</p>
+            </div>
 
-            // Agregar un marcador
-            new google.maps.Marker({
-                position: ubicacion,
-                map: map,
-                title: "Zócalo de la CDMX"
-            });
-        }
-    </script>
+            <div id="points-list" class="points-list"></div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
