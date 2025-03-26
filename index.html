@@ -1,49 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mapa Dinámico en GitHub Pages</title>
-  <script src="https://maps.googleapis.com/maps/api/js?key=TU_CLAVE_API&callback=initMap" async defer></script>
-  <style>
-    #map { height: 600px; width: 100%; }
-    body { margin: 0; padding: 20px; font-family: Arial; }
-  </style>
+    <title>Mapa Estático</title>
+    <style>
+        #map {
+            height: 500px;
+            width: 80%;
+            margin: 20px auto;
+            border: 2px solid #333;
+        }
+    </style>
 </head>
 <body>
-  <h1>Mapa Dinámico con n8n 🗺️</h1>
-  <div id="map"></div>
+    <h1 style="text-align: center;">Mapa de Ejemplo 🌍</h1>
+    <div id="map"></div>
 
-  <script>
-    let map;
-    const n8nEndpoint = "URL_DEL_ENDPOINT_N8N"; // Ej: https://tudominio.n8n.cloud/webhook/abc123
+    <!-- Script de Google Maps API con tu clave -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=TU_CLAVE_API&callback=initMap" async defer></script>
 
-    // Inicializar mapa
-    async function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: 19.432601, lng: -99.133204 }, // Coordenadas iniciales (CDMX)
-        zoom: 12
-      });
+    <script>
+        function initMap() {
+            // Coordenadas fijas (Ej: Zócalo de la CDMX)
+            const ubicacion = { lat: 19.432601, lng: -99.133204 };
+            
+            // Crear mapa centrado en las coordenadas
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: ubicacion
+            });
 
-      // Cargar marcadores desde n8n
-      await cargarMarcadores();
-    }
-
-    // Obtener datos de n8n
-    async function cargarMarcadores() {
-      try {
-        const response = await fetch(n8nEndpoint);
-        const ubicaciones = await response.json();
-
-        ubicaciones.forEach(ubicacion => {
-          new google.maps.Marker({
-            position: { lat: parseFloat(ubicacion.lat), lng: parseFloat(ubicacion.lng) },
-            map: map,
-            title: ubicacion.name
-          });
-        });
-      } catch (error) {
-        console.error("Error al cargar marcadores:", error);
-      }
-    }
-  </script>
+            // Agregar un marcador
+            new google.maps.Marker({
+                position: ubicacion,
+                map: map,
+                title: "Zócalo de la CDMX"
+            });
+        }
+    </script>
 </body>
 </html>
