@@ -1,0 +1,38 @@
+{
+    "points": [
+      {
+        "id": "1",
+        "hora": "22:00",
+        "fecha": "2025-03-28T00:00:00",
+        "lugar": "Polideportivo Municipal Maipú",
+        "precio": null,
+        "titulo": "Damas Gratis en Cerro Azul: Show Único",
+        "contacto": null,
+        "direccion": "Maipú, N3313 Cerro Azul, Misiones, Argentina",
+        "descripcion": "Damas Gratis se presenta en el Polideportivo Cerro Azul junto a Cristian y La Ruta, Pablo y su grupo, Luciano y su grupo, y Julio Da Rosa y su grupo Vanera. Entradas disponibles en TicketMisiones.com.",
+        "organizador": null,
+        "imagen": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80",
+        "geo": {
+          "latitude": -27.6329389,
+          "longitude": -55.497262
+        }
+      },
+      {
+        "id": "2",
+        "hora": "20:00",
+        "fecha": "2025-04-15T00:00:00",
+        "lugar": "La Aventura Club",
+        "precio": "$5000",
+        "titulo": "Festival de Rock Misionero",
+        "contacto": "+54 376 4123456",
+        "direccion": "Av. Roque Pérez 2578, Posadas, Misiones, Argentina",
+        "descripcion": "Gran festival de rock con las mejores bandas de la provincia. Participan: Los Antiguos, Tierra Roja, y muchos más. Bebidas y comida disponible en el lugar.",
+        "organizador": "Cultura Posadas",
+        "imagen": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=800&q=80",
+        "geo": {
+          "latitude": -27.3621,
+          "longitude": -55.9013
+        }
+      }
+    ]
+  }
