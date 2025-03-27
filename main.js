@@ -1,4 +1,3 @@
-
 let points = [];
 let map;
 
@@ -47,19 +46,22 @@ async function loadPoints() {
     try {
         const response = await fetch('points.json');
         const data = await response.json();
-        points = data.points.map(point => ({
-            id: point.id,
-            title: point.titulo,
-            description: point.descripcion,
-            image: point.imagen,
-            position: [point.geo.latitude, point.geo.longitude],
-            location: point.lugar,
-            address: point.direccion,
-            date: new Date(point.fecha),
-            time: point.hora,
-            price: point.precio,
-            organizer: point.organizador,
-            contact: point.contacto
+        points = data.map(item => ({
+            id: item.json.id,
+            title: item.json.event_details.titulo,
+            description: item.json.event_details.descripcion,
+            image: item.json.event_details.imagen_url,  // Map the new imagen_url field
+            position: [
+                item.json.location_data.geo.latitude, 
+                item.json.location_data.geo.longitude
+            ],
+            location: item.json.location_data.lugar,
+            address: item.json.event_details.direccion,
+            date: new Date(item.json.event_details.fecha),
+            time: item.json.event_details.hora,
+            price: item.json.event_details.precio,
+            organizer: item.json.event_details.organizador,
+            contact: item.json.event_details.contacto
         }));
 
         createMarkers();
@@ -132,8 +134,12 @@ function createPointsList() {
     // Add click event listeners to point items
     pointsList.querySelectorAll('.point-item').forEach(item => {
         item.addEventListener('click', () => {
-            const point = points.find(p => p.id === item.dataset.id);
-            selectPoint(point);
+            // Convert the data-id to number since it comes as string from dataset
+            const pointId = Number(item.dataset.id);
+            const point = points.find(p => p.id === pointId);
+            if (point) {
+                selectPoint(point);
+            }
         });
     });
 }
