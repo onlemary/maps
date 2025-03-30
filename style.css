@@ -103,6 +103,8 @@ body {
 }
 
 .point-item {
+    display: flex;
+    gap: 1rem;
     padding: 1rem;
     border-radius: 0.5rem;
     background-color: #F3F4F6;
@@ -119,14 +121,31 @@ body {
     border: 2px solid #3B82F6;
 }
 
+.point-item-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 0.375rem;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.point-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
 .point-item-title {
     font-weight: 500;
     margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.point-item-date, .point-item-location {
+.point-item-date, .point-item-location, .point-item-price {
     font-size: 0.875rem;
     color: #6B7280;
+    margin-bottom: 0.25rem;
 }
 
 /* Responsive Design */
@@ -153,6 +172,11 @@ body {
 
     .point-item {
         padding: 0.75rem;
+    }
+
+    .point-item-image {
+        width: 80px;
+        height: 80px;
     }
 
     .sidebar-title {
@@ -186,5 +210,10 @@ body {
 
     .point-item {
         padding: 0.5rem;
+    }
+
+    .point-item-image {
+        width: 60px;
+        height: 60px;
     }
 }

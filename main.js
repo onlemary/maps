@@ -21,9 +21,11 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
-// Sort points by distance from map center
+// Sort points by distance from map center with a threshold for local events
 function sortPointsByDistance() {
     const mapCenter = map.getCenter();
+    const localThreshold = 10; // 10km radius to consider "local" events
+
     points.sort((a, b) => {
         const distA = calculateDistance(
             mapCenter.lat, 
@@ -37,8 +39,33 @@ function sortPointsByDistance() {
             b.position[0], 
             b.position[1]
         );
+        
+        // If one point is local and the other isn't, prioritize the local one
+        const aIsLocal = distA <= localThreshold;
+        const bIsLocal = distB <= localThreshold;
+        
+        if (aIsLocal && !bIsLocal) return -1;
+        if (!aIsLocal && bIsLocal) return 1;
+        
+        // If both are local or both are distant, sort by distance
         return distA - distB;
     });
+
+    // Update the points list to reflect the new order
+    createPointsList();
+}
+
+// Debounce function to limit how often we update during map moves
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 // Load points from JSON file
@@ -84,6 +111,7 @@ function createMarkers() {
             .addTo(map);
 
         marker.on('click', () => selectPoint(point));
+        point.marker = marker; // Store the marker in the point object
     });
 }
 
@@ -98,7 +126,9 @@ function formatDate(date) {
 function createPointCard(point) {
     return `
         <div class="point-card">
-            ${point.image ? `<img src="${point.image}" alt="${point.title}">` : ''}
+            <div class="point-card-thumbnail">
+                ${point.image ? `<img src="${point.image}" alt="${point.title}">` : ''}
+            </div>
             <div class="point-card-content">
                 <h3 class="point-card-title">${point.title}</h3>
                 <div class="point-details">
@@ -123,25 +153,38 @@ function createPointCard(point) {
 
 function createPointsList() {
     const pointsList = document.getElementById('points-list');
-    pointsList.innerHTML = points.map(point => `
-        <div class="point-item" data-id="${point.id}">
-            <h3 class="point-item-title">${point.title}</h3>
-            <p class="point-item-date">${formatDate(point.date)} - ${point.time}</p>
-            <p class="point-item-location">${point.location}</p>
-        </div>
-    `).join('');
+    // Only create list items for points that have markers
+    pointsList.innerHTML = points
+        .filter(point => point.marker) // Ensure the point has a marker
+        .map(point => `
+            <div class="point-item" data-id="${point.id}">
+                ${point.image ? `<img src="${point.image}" alt="${point.title}" class="point-item-image">` : ''}
+                <div class="point-item-content">
+                    <h3 class="point-item-title">${point.title}</h3>
+                    <p class="point-item-date">${formatDate(point.date)} - ${point.time}</p>
+                    <p class="point-item-location">${point.location}</p>
+                    ${point.price ? `<p class="point-item-price">Precio: ${formatPrice(point.price)}</p>` : ''}
+                </div>
+            </div>
+        `).join('');
 
     // Add click event listeners to point items
     pointsList.querySelectorAll('.point-item').forEach(item => {
         item.addEventListener('click', () => {
-            // Convert the data-id to number since it comes as string from dataset
-            const pointId = Number(item.dataset.id);
+            const pointId = Number(item.dataset.id); // Convert dataset ID to number
             const point = points.find(p => p.id === pointId);
             if (point) {
                 selectPoint(point);
             }
         });
     });
+}
+
+function formatPrice(price) {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS'
+    }).format(price);
 }
 
 function selectPoint(point) {
@@ -158,11 +201,14 @@ function selectPoint(point) {
     map.panTo(point.position);
 }
 
-// Update points list when map moves
-map.on('moveend', () => {
+// Update points list when map moves (debounced)
+const debouncedSort = debounce(() => {
     sortPointsByDistance();
-    createPointsList();
-});
+}, 300);
+
+// Replace the existing map.on('moveend') with this:
+map.on('moveend', debouncedSort);
+map.on('zoomend', debouncedSort);
 
 // Load points when the page loads
 loadPoints();
